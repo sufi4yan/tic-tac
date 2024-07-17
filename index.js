@@ -26,6 +26,7 @@ allDivs.forEach((item) => {
             
         }
         else{
+            filterer(clicksO)
             item.innerText = `O`
             clicksO.push(Number((item.id).slice(-1)))
             console.log(`clicks for O = ` + clicksO)
@@ -53,16 +54,24 @@ allDivs.forEach((item) => {
     }, {once: true})
 })
 function checkWin(player) {
-
     let win = false
     let yes = null
-    win = filterer(clicksX)[2]
+    win = filterer(player)[2]
     console.log(`win = ` + win)
-        
+    let difference = filterer(player)[0][0]
+    let checker = filterer(player)[3][0]
         if (win){
-            
-            if (filterer(clicksX)[0][0] ) {
-                player[0] === 7 ? win = true: win = false
+            console.log(filterer(player)[3][0])
+            console.log(filterer(player)[0][0])
+            if ( difference === 1 || difference === 4) {
+                console.log(`bongo`)
+                checker % 3 === 0? win = true:win = false
+                return win
+                
+            }
+            if (difference === 2) {
+                checker === 7 ? win = true: win = false
+                
             }
            else{
             win = true
@@ -72,7 +81,6 @@ function checkWin(player) {
     return win
 }
 function filterer(arr) {
-    let conf = 0
     arr.sort()
     arr.reverse()
     let difarr = []
@@ -81,27 +89,32 @@ function filterer(arr) {
     let win2 = false
     for (let i = 0; i < arr.length - 1; i++) {
         diff = arr[i] - arr[i + 1]
-        difarr.push(diff)
-        
-        
+        difarr.push(diff)  
     }
 
-    difarr.sort()
-    difarr.reverse()
-    console.log(`difarr = ` + difarr)
+
+
+
     for (let i = 0; i < difarr.length - 1; i++){
         if (difarr[i] === difarr[i+1]){
-            console.log(`oh wow`)
+
             whywin = [difarr[i], difarr[i+1]]
             win2 = true
-            console.log(whywin)
             newArr.push(arr[i+1])
             newArr.push(arr[i])
             newArr.push(arr[i+2])
+            arr[i+3] === undefined? null : newArr.push(arr[i+3])
+            
+
             
         }
     }
+    newArr.sort()
+    newArr.reverse()
+
+    console.log(`difarr = ` + difarr)
     console.log(`filtered array = ` + newArr)
-    set = [whywin, difarr, win2]
+    console.log(`whywin = ` + whywin)
+    set = [whywin, difarr, win2, newArr]
     return set
 }
