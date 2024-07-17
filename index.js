@@ -2,35 +2,27 @@ const allDivs = document.querySelectorAll(`main > *`)
 let clicksX = []
 let clicksO = []
 let turn = 0
+const winCombos = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
 allDivs.forEach((item) => {
     item.addEventListener(`click`, () => {
+        let win = false
         if (turn % 2 === 0) {
-            filterer(clicksX)            
             item.innerText = `X` 
             clicksX.push(Number((item.id).slice(-1)))
-            console.log(`clicks for O = ` + clicksO)
-            console.log(`clicks for X = ` + clicksX)
             turn++
             let total = 0
             if (clicksX.length > 2) {
-                
-                clicksX.sort()
-                clicksX.reverse()
-                console.log(clicksX)
-                
+               
                 if (checkWin(clicksX)) {
                     alert(`X won`)
                 }
-                
+                console.log(clicksX)
             }
-            
-        }
+            }
         else{
-            filterer(clicksO)
+
             item.innerText = `O`
             clicksO.push(Number((item.id).slice(-1)))
-            console.log(`clicks for O = ` + clicksO)
-            console.log(`clicks for X = ` + clicksX)
             turn++
             let total = 0
             if (clicksO.length > 2) {
@@ -41,80 +33,43 @@ allDivs.forEach((item) => {
                 
                 if (checkWin(clicksO)) {
                     alert(`O won`)
+                    allDivs.forEach((e) => {
+                        
+                    })
                 }
-
             }
         }
-        
-        // console.log(item.getBoundingClientRect().x)
-        // console.log(item.getBoundingClientRect().y)
         console.log((item.id).slice(-1))
-        
-        
     }, {once: true})
 })
 function checkWin(player) {
+    player.sort()
+    let checkSubset = (parentArray, subsetArray) => {
+        return subsetArray.every((el) => {
+            return parentArray.includes(el)
+        })
+    }
+
     let win = false
-    let yes = null
-    win = filterer(player)[2]
-    console.log(`win = ` + win)
-    let difference = filterer(player)[0][0]
-    let checker = filterer(player)[3][0]
-        if (win){
-            console.log(filterer(player)[3][0])
-            console.log(filterer(player)[0][0])
-            if ( difference === 1 || difference === 4) {
-                console.log(`bongo`)
-                checker % 3 === 0? win = true:win = false
-                return win
-                
+    for (let i = 0; i < winCombos.length; i++) {
+        win = false
+            if (checkSubset(player, winCombos[i])) {
+                win = true
+                console.log(`wow`)
             }
-            if (difference === 2) {
-                checker === 7 ? win = true: win = false
-                
+            if (win){
+                if (String(winCombos[i]) === String([1,2,3])) {document.querySelector(`main`).classList.add(`win-horz-upper`)}
+                else if(String(winCombos[i]) === String([4,5,6])) {document.querySelector(`main`).classList.add(`win-horz-middle`)}
+                else if(String(winCombos[i]) === String([7,8,9])){document.querySelector(`main`).classList.add(`win-horz-down`)}
+                else if(String(winCombos[i]) === String([1,4,7])) {document.querySelector(`main`).classList.add(`win-vert-left`)}
+                else if(String(winCombos[i]) === String([2,5,8])) {document.querySelector(`main`).classList.add(`win-vert-middle`)}
+                else if(String(winCombos[i]) === String([3,6,9])) {document.querySelector(`main`).classList.add(`win-vert-right`)}
+                else if(String(winCombos[i]) === String([3,5,7])) {document.querySelector(`main`).classList.add(`win-slant-357`)}
+                else if(String(winCombos[i]) === String([1,5,9])) {document.querySelector(`main`).classList.add(`win-slant-159`)}    
+                break        
             }
-           else{
-            win = true
-            console.log(`only else option`)
-           }
-        }
+            
+    }
     return win
-}
-function filterer(arr) {
-    arr.sort()
-    arr.reverse()
-    let difarr = []
-    let whywin = []
-    let newArr = []
-    let win2 = false
-    for (let i = 0; i < arr.length - 1; i++) {
-        diff = arr[i] - arr[i + 1]
-        difarr.push(diff)  
-    }
 
-
-
-
-    for (let i = 0; i < difarr.length - 1; i++){
-        if (difarr[i] === difarr[i+1]){
-
-            whywin = [difarr[i], difarr[i+1]]
-            win2 = true
-            newArr.push(arr[i+1])
-            newArr.push(arr[i])
-            newArr.push(arr[i+2])
-            arr[i+3] === undefined? null : newArr.push(arr[i+3])
-            
-
-            
-        }
-    }
-    newArr.sort()
-    newArr.reverse()
-
-    console.log(`difarr = ` + difarr)
-    console.log(`filtered array = ` + newArr)
-    console.log(`whywin = ` + whywin)
-    set = [whywin, difarr, win2, newArr]
-    return set
 }
